@@ -22,18 +22,44 @@
 // use an event listener, prevent default form submission for clicks and pressing enter
 
 
+// PSUEDO CODE
 
-function citySearch() {}
+// user types input into HTML form
+// input submission is sent a as fetch request to weatherAPI
+// receive JSON
+// extract, City name, Date, current weather and store to object
+// extract weather for next 5 days and store to new objects
+// add relevant weather Icons to all objects
+// append all to HTML
 
+// store user input to local storage
+// append user input and current weather for that city to HTML aside
+// event listener for each appended aside to run the main fetch request function above
+
+
+
+function citySearch() {
+    var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
+fetch(requestUrl)
+.then(function (response) {
+  return response.json();
+})
+.then(function (data) {
+  console.log(data)
+})
+}
 function storeSearchHistory() {}
+// use local storage to store the search city name only, then grab the city name and perform a new fetch with current data
 
 function forcast() {}
-
+// parse json data  and append to screen  the current weather as well as 5 day outlook
+// (consider storing a prototype of JSON info in storage to use a template for faster reloading of old searches???)
 function getSearchHistory() {}
+// get local storage items and append them to the aside HTML element
+// clicking on them performs a NEW GET request (fetch from server)
 
 
 
-var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
 
 var city;
 
