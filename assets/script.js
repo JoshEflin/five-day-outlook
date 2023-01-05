@@ -43,8 +43,9 @@ var formInput = document.querySelector(".city-name")
 var searchHistory = document.querySelector(".search-history")
 var prevSearchArr = document.querySelectorAll(".previous-search")
 var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
-var coordinateArr;
-var coordinates;
+var cityObj;
+// var coordinates;
+
 getSearchHistory()
 
 function main() {
@@ -52,8 +53,8 @@ function main() {
 
     // forecast()
 }
+// newSearch gets geocoding Data from the API and puts it in local storage
 function newSearch(userCity) {
-    
     var geoRequestUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+userCity+"&limit=&appid="+apiKey;
     fetch(geoRequestUrl)
     .then(function (response) {
@@ -62,21 +63,37 @@ function newSearch(userCity) {
     .then(function (data) { 
         console.log(data)  
         var latitude = data[0].lat;
-        var longitude = data[0].lon
-        localStorage.setItem(userCity, JSON.stringify({
-        latitude: latitude,
-        longitude: longitude,
-        }))
+        var longitude = data[0].lon;
+        var geoData = {
+            cityName: userCity,
+            coordinates:[latitude, longitude]
+        };
+        console.log(geoData);
+        var cityObj =JSON.parse(localStorage.getItem("cityObj"))
+        console.log (cityObj)
+             
+        if (cityObj == null){
+            cityObj =[] 
+            // cityObj.push(geoData)     
+        }  
+        // for loop through the array of cityobj, if position i .cityhname = usercity then do not push
+        cityObj.push(geoData)
+        console.log (cityObj);
+        localStorage.setItem("cityObj", JSON.stringify(cityObj));
+        for (i= 0; i<cityObj.length; i++){
+        cityObj[i].cityname == userCity
+            console.log (cityObj[i])
+        }
         
-})
-
-var coordinates =JSON.parse(localStorage.getItem(formInput.value))
-console.log(coordinates)
-forecast(coordinates);
+        console.log(cityObj[0].cityName)
+        
+        forecast(cityObj)           
+});
 }
 // use local storage to store the search city name only, then grab the city name and perform a new fetch with current data
 
 function forecast(coordinates) {
+    console.log("function called")
     // var getWeather = newSearch(formInput.value)
     // console.log(getWeather)
     var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+coordinates.latitude+"&lon="+coordinates.longitude+"&appid="+apiKey;
