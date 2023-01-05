@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,19 +8,26 @@
     <link rel="stylesheet" href="./assets/style.css">
     <title>Weather-er</title>
 </head>
+
 <body>
     <header>
-        <h1>WEATHER</h1>
-
+        <h1 class="title">Have you ever wondered about the Weather?</h1>
+        <p class="prompt"> Enter a City's name below</p>
+        <input class="city-name" type="text" placeholder="Search">
     </header>
-    <main>
-        <input class = "city-name" type="text">
-    
-    </main>
-    <aside class = "search-history">Previous citys
+    <div class="container flex">
+        <aside class="search-history">
+            <h2 class = "container-label">Previous Citys</h2>
 
 
-    </aside>
-    <script src = "assets/script.js"></script>
+        </aside>
+        <main class= "dashboard">
+            <h2 class = "container-label">Today's Forecast</h2>
+
+        </main>
+       
+    </div>
+    <script src="assets/script.js"></script>
 </body>
+
 </html>

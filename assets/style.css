@@ -5,7 +5,6 @@
     /* colors */
     --clr-light-blue: 198, 84%, 56%;
     --clr-dark-blue : 228, 84%, 56%;
-    --clr-orange : 18, 84%, 56%;
     --clr-dark-orange: 46, 100%, 50%;
 
     /* font stuff below */
@@ -47,9 +46,7 @@ h2,
 h3,
 h4,
 h5,
-p,
-figure,
-picture {
+p {
     margin: 0; 
 }
 
@@ -67,40 +64,18 @@ p {
 body {
     font-family: var(--ff-sans-normal);
     font-size: var(--fs-400);
-    color: hsl( var(--clr-white) );
-    background-color: hsl( var(--clr-dark) );
+    color: whitesmoke;
+    background-image: linear-gradient( hsl( var(--clr-dark-blue)),hsl(var(--clr-light-blue)));
     line-height: 1.5;
     min-height: 100vh;
     
 }
 
-/* make images easier to work with */
-img,
-picture {
-    max-width: 100%;
-    display: block;
-}
-
 /* make form elements easier to work with */
 input,
-button,
-textarea,
-select {
+button{
     font: inherit;
 }
-
-/* remove animations for people who've turned them off */
-@media (prefers-reduced-motion: reduce) {  
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 
 /* ------------------- */
 /* Utility classes     */
@@ -119,19 +94,43 @@ select {
 }
 
 .container {
+    margin-top: 2rem;
     padding-inline: 2em;
     margin-inline: auto;
-    max-width: 80rem;
+    max-width: 90rem;
+}
+input {
+    text-align: center;
 }
 
-.sr-only {
-  position: absolute; 
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px; 
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap; /* added line */
-  border: 0;
+header {
+    font-family: var(--ff-sans-cond);
+    text-align: center;
+    padding-bottom: 1rem;
+    outline:auto;
+}
+.container-label {
+    font-size: var(--fs-500);
+    font-family: var(--ff-serif);
+    text-align: center;
+    color: hsl(var(--clr-dark-orange) );
+}
+.search-history {
+    border-radius: 5px;
+    margin-right: 2rem;
+    flex-basis: 33%;
+    outline: auto;
+    background-color: cornflowerblue;
+    outline-color: cornsilk;
+}
+.city-name {
+    border-radius: 15px;
+}
+.dashboard {
+    border-radius: 5px;
+    text-align: center;
+    flex-basis: 65%;
+    outline: auto;
+    background-color: cornflowerblue;
+    outline-color: cornsilk;
 }
