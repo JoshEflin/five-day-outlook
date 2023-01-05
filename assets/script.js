@@ -41,12 +41,16 @@
 
 var formInput = document.querySelector(".city-name")
 var searchHistory = document.querySelector(".search-history")
+var prevSearchArr = document.querySelectorAll(".previous-search")
 var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
+var coordinateArr;
+var coordinates;
 getSearchHistory()
 
 function main() {
     newSearch(formInput.value)
-    forecast()
+
+    // forecast()
 }
 function newSearch(userCity) {
     
@@ -59,24 +63,23 @@ function newSearch(userCity) {
         console.log(data)  
         var latitude = data[0].lat;
         var longitude = data[0].lon
-    // create a local storage object with the latitude and longitude inside
         localStorage.setItem(userCity, JSON.stringify({
-            latitude: latitude,
-            longitude: longitude,
+        latitude: latitude,
+        longitude: longitude,
         }))
-    })
-    
-    var coordinates =JSON.parse(localStorage.getItem(formInput.value))
-    return coordinates;
+        
+})
 
+var coordinates =JSON.parse(localStorage.getItem(formInput.value))
+console.log(coordinates)
+forecast(coordinates);
 }
 // use local storage to store the search city name only, then grab the city name and perform a new fetch with current data
 
-function forecast() {
-    // getWeathers current value is a placeholder for now
-    var getWeather = newSearch(formInput.value)
-    console.log(getWeather)
-    var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+getWeather.latitude+"&lon="+getWeather.longitude+"&appid="+apiKey;
+function forecast(coordinates) {
+    // var getWeather = newSearch(formInput.value)
+    // console.log(getWeather)
+    var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+coordinates.latitude+"&lon="+coordinates.longitude+"&appid="+apiKey;
     fetch(requestUrl)
     .then(function (response){
         return response.json()
@@ -87,10 +90,14 @@ function forecast() {
 }
 // parse json data  and append to screen  the current weather as well as 5 day outlook
 // (consider storing a prototype of JSON info in storage to use a template for faster reloading of old searches???)
-function getSearchHistory() {
+function getSearchHistory(prevSearch) {
     console.log(localStorage)
+    for (i=0; i<localStorage.length; i++){
+        
+    }
     var cityEl = document.createElement('div')
-    console.log(localStorage.boston)
+    cityEl.setAttribute("class", "previous-search")
+    console.log(localStorage.length)
     cityEl.innerText=localStorage.boston
     searchHistory.appendChild(cityEl)
     
