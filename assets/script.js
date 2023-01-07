@@ -12,31 +12,34 @@
 
 var formInput = document.querySelector(".city-name")
 var searchHistory = document.querySelector(".search-history")
-var prevSearchArr = document.querySelectorAll(".previous-search")
+var searchedCityList = document.querySelector('.searched-cities');
+var prevSearchArr = document.querySelectorAll(".previous-search");
 var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
-var cityObj;
+var cityObjArr;
 // var coordinates;
-
+console.log(searchedCityList)
 addCityHistory()
 
 function main() {
-    checkForCoordinates(formInput.value)
-    addCityHistory()
+    checkForCoordinates(formInput.value);
+    resetCityHistory();
+
 }
 
 function checkForCoordinates(searchedCity) {
-    cityObj = JSON.parse(localStorage.getItem("cityObj"));
-    if (cityObj !== null) {
-        for (i = 0; i < cityObj.length; i++) {
-            if (cityObj[i].cityName === searchedCity) {
-                currentWeather(cityObj[i].coordinates);
-                forecast(cityObj[i].coordinates);
+    cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
+    // is this just a while loop???? gunna be so mad
+    if (cityObjArr !== null) {
+        for (i = 0; i < cityObjArr.length; i++) {
+            if (cityObjArr[i].cityName == searchedCity) {
+                currentWeather(cityObjArr[i].coordinates);
+                forecast(cityObjArr[i].coordinates);
                 // the return false below is the most precious line of code ever written, it goes back up to the first if statement and says PSCYHE! 
                 // WE ARE FALSE NOW and thefore stops the forloop. DO NOT REMOVE 
                 return false
             }
         } newSearch(searchedCity);
-    } else if (cityObj === null) {
+    } else if (cityObjArr === null) {
         newSearch(searchedCity);
     };
 };
@@ -59,13 +62,13 @@ function newSearch(userCity) {
                 cityName: userCity,
                 coordinates: coordinates
             };
-            cityObj = JSON.parse(localStorage.getItem("cityObj"));
-            // if this is the first search, cityObj will point at nothing and needs to be set to an empty array.
-            if (cityObj == null) {
-                cityObj = [];
+            cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
+            // if this is the first search, cityObjArr will point at nothing and needs to be set to an empty array.
+            if (cityObjArr == null) {
+                cityObjArr = [];
             };
-            cityObj.push(geoData);
-            localStorage.setItem("cityObj", JSON.stringify(cityObj));
+            cityObjArr.push(geoData);
+            localStorage.setItem("cityObjArr", JSON.stringify(cityObjArr));
             currentWeather(coordinates);
             forecast(coordinates);
         });
@@ -80,8 +83,8 @@ function currentWeather(coordinates) {
             return response.json()
         })
         .then(function (data) {
-            console.log(data)
-            //  data needs to be passed to addWeather
+            // console.log(data)
+            addWeather(data)
         })
 }
 function forecast(coordinates) {
@@ -93,32 +96,68 @@ function forecast(coordinates) {
             return response.json();
         })
         .then(function (data) {
-            console.log(data)
+            // console.log(data)
         });
 }
 // access local storage and add all previously searched cities to HTML storing their coordinates in a data attribute, so when they are clicked  the call forcast and current weather functions.
 function addCityHistory() {
-    cityObj = JSON.parse(localStorage.getItem("cityObj"));
-    console.log(cityObj);
-    if (cityObj !== null) {
-        for (i = 0; i < cityObj.length; i++) {
-            var text = cityObj[i].cityName;
-            var coordinates = cityObj[i].coordinates;
-            var cityEl = document.createElement('div')
-            cityEl.setAttribute("class", "previous-search")
+    cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
+    // console.log(cityObjArr);
+    
+    if (cityObjArr === null){
+        return;
+    } else if (cityObjArr.length < 5) {
+        for (i = 0; i < cityObjArr.length; i++) {
+            var text = cityObjArr[i].cityName;
+            var coordinates = cityObjArr[i].coordinates;
+            var cityEl = document.createElement('li');
+            cityEl.setAttribute("class", "previous-search");
+            cityEl.textContent = text;
+            cityEl.setAttribute('data-latitude', coordinates[0]);
+            cityEl.setAttribute('data-longitude', coordinates[1]); 
+            searchedCityList.appendChild(cityEl);
+        };
+    } else if (cityObjArr.length >= 5){
+        for (i = cityObjArr.length - 5; i < cityObjArr.length; i++) {
+            var text = cityObjArr[i].cityName;
+            var coordinates = cityObjArr[i].coordinates;
+            var cityEl = document.createElement('li');
+            cityEl.setAttribute("class", "previous-search");
             cityEl.textContent = text;
             cityEl.setAttribute('data-latitude', coordinates[0]);
             cityEl.setAttribute('data-longitude', coordinates[1]);
-            searchHistory.appendChild(cityEl);
-        }
-    }
+            searchedCityList.appendChild(cityEl);
+        };
+    } ;
+};
+// needs to load one previous city at a time  for up to 5 total cities and always displays the five most recent
+function resetCityHistory(){
+// find the five most recent city names and append them to the screen, DISCLUDE the current city. 
+    searchedCityList.replaceChildren()
+    addCityHistory()
 }
-function addForecast() { }
-function addWeather() { }
+// Displays the five day outlook 
+function addForecast() { };
 
+// adds todayus weather 
+function addWeather(data) { 
+    console.log('we have arrived')
+};
+
+// defines what happens when the click event is called
+function callPreviousCity(event){
+    var clickedCity =event.target
+    var cityName =clickedCity.innerHTML
+    var latitude =clickedCity.getAttribute('data-latitude')
+    var longitude= clickedCity.getAttribute('data-longitude')
+    forecast([latitude, longitude])
+    currentWeather([latitude,longitude])
+
+    
+ }
 // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={}
 // console.log(apiKey)
-
+searchedCityList.addEventListener('click',callPreviousCity)
 formInput.addEventListener('keydown', function (event) {
     if (event.key === "Enter") {
         main();
