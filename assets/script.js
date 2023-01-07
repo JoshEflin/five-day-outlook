@@ -8,35 +8,6 @@
 // WHEN I click on a city in the search history
 // THEN I am again presented with current and future conditions for that city
 
-// function that gets user input and uses it to make an api call
-
-// function that gets response from the api call and converts it  into JSON ( see fetch stuff)
-
-// extract current weather conditions from JSON and add to page
-
-// extract forecast from JSON and add to page
-//  add the data from the API call to local storage and store that in a variable  that is also added to page 
-
-//  treat clickin on an item in the search history as a NEW API CALL and  update local storage with new information accordingly
-
-// use an event listener, prevent default form submission for clicks and pressing enter
-
-
-// PSUEDO CODE
-
-// user types input into HTML form
-// input submission is sent a as fetch request to weatherAPI
-// receive JSON
-// extract, City name, Date, current weather and store to object
-// extract weather for next 5 days and store to new objects
-// add relevant weather Icons to all objects
-// append all to HTML
-
-// store user input to local storage
-// append user input and current weather for that city to HTML aside
-// event listener for each appended aside to run the main fetch request function above
-
-
 // BUGS- form input does not allow for state code or country code
 
 var formInput = document.querySelector(".city-name")
@@ -46,94 +17,110 @@ var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
 var cityObj;
 // var coordinates;
 
-getSearchHistory()
+addCityHistory()
 
 function main() {
-    newSearch(formInput.value)
-
-    // forecast()
+    checkForCoordinates(formInput.value)
+    addCityHistory()
 }
+
+function checkForCoordinates(searchedCity) {
+    cityObj = JSON.parse(localStorage.getItem("cityObj"));
+    if (cityObj !== null) {
+        for (i = 0; i < cityObj.length; i++) {
+            if (cityObj[i].cityName === searchedCity) {
+                currentWeather(cityObj[i].coordinates);
+                forecast(cityObj[i].coordinates);
+                // the return false below is the most precious line of code ever written, it goes back up to the first if statement and says PSCYHE! 
+                // WE ARE FALSE NOW and thefore stops the forloop. DO NOT REMOVE 
+                return false
+            }
+        } newSearch(searchedCity);
+    } else if (cityObj === null) {
+        newSearch(searchedCity);
+    };
+};
+
+
 // newSearch gets geocoding Data from the API and puts it in local storage
 function newSearch(userCity) {
-    var geoRequestUrl = "http://api.openweathermap.org/geo/1.0/direct?q="+userCity+"&limit=&appid="+apiKey;
+
+
+    var geoRequestUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + userCity + "&limit=&appid=" + apiKey;
     fetch(geoRequestUrl)
-    .then(function (response) {
-        return response.json();
-    })
-    .then(function (data) { 
-        console.log(data)  
-        var latitude = data[0].lat;
-        var longitude = data[0].lon;
-        var geoData = {
-            cityName: userCity,
-            coordinates:[latitude, longitude]
-        };
-        console.log(geoData);
-        var cityObj =JSON.parse(localStorage.getItem("cityObj"))
-        console.log (cityObj)
-             
-        if (cityObj == null){
-            cityObj =[] 
-            // cityObj.push(geoData)     
-        }  
-        // for loop through the array of cityobj, if position i .cityhname = usercity then do not push
-        cityObj.push(geoData)
-        console.log (cityObj);
-        localStorage.setItem("cityObj", JSON.stringify(cityObj));
-        for (i= 0; i<cityObj.length; i++){
-        cityObj[i].cityname == userCity
-            console.log (cityObj[i])
-        }
-        
-        console.log(cityObj[0].cityName)
-        
-        forecast(cityObj)           
-});
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            var latitude = data[0].lat;
+            var longitude = data[0].lon;
+            var coordinates = [latitude, longitude];
+            var geoData = {
+                cityName: userCity,
+                coordinates: coordinates
+            };
+            cityObj = JSON.parse(localStorage.getItem("cityObj"));
+            // if this is the first search, cityObj will point at nothing and needs to be set to an empty array.
+            if (cityObj == null) {
+                cityObj = [];
+            };
+            cityObj.push(geoData);
+            localStorage.setItem("cityObj", JSON.stringify(cityObj));
+            currentWeather(coordinates);
+            forecast(coordinates);
+        });
 }
 // use local storage to store the search city name only, then grab the city name and perform a new fetch with current data
+function currentWeather(coordinates) {
+    console.log("current weather called")
 
-function forecast(coordinates) {
-    console.log("function called")
-    // var getWeather = newSearch(formInput.value)
-    // console.log(getWeather)
-    var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat="+coordinates.latitude+"&lon="+coordinates.longitude+"&appid="+apiKey;
+    var requestUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates[0] + "&lon=" + coordinates[1] + "&appid=" + apiKey;
     fetch(requestUrl)
-    .then(function (response){
-        return response.json()
-    })
-    .then(function(data){
-         console.log(data)
-    })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data)
+            //  data needs to be passed to addWeather
+        })
 }
-// parse json data  and append to screen  the current weather as well as 5 day outlook
-// (consider storing a prototype of JSON info in storage to use a template for faster reloading of old searches???)
-function getSearchHistory(prevSearch) {
-    console.log(localStorage)
-    for (i=0; i<localStorage.length; i++){
-        
+function forecast(coordinates) {
+    console.log("5 day forecast called")
+
+    var requestUrl = "https://api.openweathermap.org/data/2.5/forecast?lat=" + coordinates[0] + "&lon=" + coordinates[1] + "&appid=" + apiKey;
+    fetch(requestUrl)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data)
+        });
+}
+// access local storage and add all previously searched cities to HTML storing their coordinates in a data attribute, so when they are clicked  the call forcast and current weather functions.
+function addCityHistory() {
+    cityObj = JSON.parse(localStorage.getItem("cityObj"));
+    console.log(cityObj);
+    if (cityObj !== null) {
+        for (i = 0; i < cityObj.length; i++) {
+            var text = cityObj[i].cityName;
+            var coordinates = cityObj[i].coordinates;
+            var cityEl = document.createElement('div')
+            cityEl.setAttribute("class", "previous-search")
+            cityEl.textContent = text;
+            cityEl.setAttribute('data-latitude', coordinates[0]);
+            cityEl.setAttribute('data-longitude', coordinates[1]);
+            searchHistory.appendChild(cityEl);
+        }
     }
-    var cityEl = document.createElement('div')
-    cityEl.setAttribute("class", "previous-search")
-    console.log(localStorage.length)
-    cityEl.innerText=localStorage.boston
-    searchHistory.appendChild(cityEl)
-    
 }
-// get local storage items and append them to the aside HTML element
-// clicking on them performs a NEW GET request (fetch from server)
-
-
-
-
-var city;
-
+function addForecast() { }
+function addWeather() { }
 
 // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={}
 // console.log(apiKey)
 
-formInput.addEventListener('keydown', function(event){
-    if (event.key === "Enter"){
+formInput.addEventListener('keydown', function (event) {
+    if (event.key === "Enter") {
         main();
-    }
-    
-})
+    };
+});
