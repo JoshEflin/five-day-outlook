@@ -94,7 +94,7 @@ button{
     margin-top: 2rem;
     padding-inline: 2em;
     margin-inline: auto;
-    max-width: 90rem;
+    max-width: 80rem;
 }
 input {
     text-align: center;
@@ -130,4 +130,28 @@ header {
     outline: auto;
     background-color: cornflowerblue;
     outline-color: cornsilk;
+}
+/* .todays-weather {
+    display:flex;
+    text-decoration: none;
+
+} */
+
+@media screen and (max-width: 767px) {
+    .container{
+        padding: 0px
+    }
+    .flex{
+    flex-direction: column;
+    }
+    .search-history {
+        margin: 1rem;
+
+    }
+    .dashboard {
+        margin:1rem;
+    }
+    header {
+        margin:1rem;
+    }
 }
