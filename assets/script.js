@@ -16,15 +16,18 @@ var searchedCityList = document.querySelector('.searched-cities');
 var prevSearchArr = document.querySelectorAll(".previous-search");
 var apiKey = "93a9448c198f02ecbe576b63b0dc64b3";
 var cityObjArr;
-var newIcon = document.querySelector('.icon')
-var city = document.querySelector('.city-weather')
-var currentHigh = document.querySelector('.high')
-var currentLow = document.querySelector('.low')
-var currentAirPressure = document.querySelector('.pressure')
-var currentHumidity = document.querySelector('.humidity')
-var currentWind = document.querySelector(".wind")
-var todayDate = document.querySelector('.date')
-var fiveDayOutlook = document.querySelector('.forecast-card')
+var newIcon = document.querySelector('.icon');
+var city = document.querySelector('.city-weather');
+var currentHigh = document.querySelector('.high');
+var currentLow = document.querySelector('.low');
+var currentAirPressure = document.querySelector('.pressure');
+var currentHumidity = document.querySelector('.humidity');
+var currentWind = document.querySelector(".wind");
+var todayDate = document.querySelector('.date');
+var fiveDayOutlook = document.querySelector('.forecast-card');
+var todayType = document.querySelector('.today-type');
+var weekCity = document.querySelector('.week');
+console.log(weekCity)
 var today = dayjs()
 
 
@@ -87,12 +90,12 @@ function currentWeather(cityName, coordinates) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates[0] + "&lon=" + coordinates[1] + "&appid=" + apiKey + "&units=imperial";
     fetch(requestUrl)
         .then(function (response) {
-            return response.json()
+            return response.json();
         })
         .then(function (data) {
             // console.log(data)
-            addWeather(cityName, data)
-            resetCityHistory()
+            addWeather(cityName, data);
+            resetCityHistory();
         })
 };
 // fetches the five day outlook for the selected city and sends it to add forecast
@@ -103,7 +106,7 @@ function forecast(cityName, coordinates) {
             return response.json();
         })
         .then(function (data) {
-            addForecast(cityName, data)
+            addForecast(cityName, data);
         });
 };
 // access local storage and add all previously searched cities to HTML storing their coordinates in a data attribute, so when they are clicked 
@@ -113,7 +116,7 @@ function addCityHistory() {
     if (cityObjArr === null) {
         return;
     } else if (cityObjArr.length < 5) {
-        for (i = cityObjArr.length -1 ; i >=0  ; i--) {
+        for (i = cityObjArr.length - 1; i >= 0; i--) {
             let text = cityObjArr[i].cityName;
             let coordinates = cityObjArr[i].coordinates;
             let cityEl = document.createElement('li');
@@ -124,8 +127,8 @@ function addCityHistory() {
             searchedCityList.appendChild(cityEl);
         };
     } else if (cityObjArr.length >= 5) {
-        for (i = cityObjArr.length -1; i>= cityObjArr.length -5 ; i--) {
-            console.log(cityObjArr[i])
+        for (i = cityObjArr.length - 1; i >= cityObjArr.length - 5; i--) {
+            console.log(cityObjArr[i]);
             let text = cityObjArr[i].cityName;
             let coordinates = cityObjArr[i].coordinates;
             let cityEl = document.createElement('li');
@@ -139,34 +142,38 @@ function addCityHistory() {
 };
 //  clears the list of previous cities and appends the new list of previous cities
 function resetCityHistory() {
-    searchedCityList.replaceChildren()
-    addCityHistory()
+    searchedCityList.replaceChildren();
+    addCityHistory();
 };
+function resetFiveDay() {
+    fiveDayOutlook.replaceChildren()
+}
 // adds the 5 day outlook to the HTML
 function addForecast(cityName, data) {
-    console.log(cityName, data)
+    weekCity.textContent = "Five day outlook for "+ cityName
+    resetFiveDay()
     var fiveDay = data.list.filter(time => time.dt_txt.includes("12:00:00"))
     for (i = 0; i < fiveDay.length; i++) {
-        let day =fiveDay[i]
-        let tempMax =day.main.temp_max
-        let tempMin = day.main.temp_min
-        let dayEl = document.createElement('div')
-        dayEl.className=='day-card'
-        dayEl.textContent="hi"+i
-        fiveDayOutlook.appendChild(dayEl)
+        let day = fiveDay[i];
+        let tempMax = day.main.temp_max;
+        let tempMin = day.main.temp_min;
+        let dayEl = document.createElement('div');
+        dayEl.className == 'day-card';
+        dayEl.textContent = "hi" + i;
+        fiveDayOutlook.appendChild(dayEl);
     }
 
 };
 
 // adds todays weather to the HTML 
 function addWeather(cityName, data) {
-    var weather = data.main
-    var feelsLike = weather.feels_like
-    var humidity = weather.humidity
-    var pressure = weather.pressure + " kilopascals"
-    var temp = weather.temp + "\u00B0F"
-    var hi = weather.temp_max + "\u00B0F"
-    var low = weather.temp_min + "\u00B0F"
+    var weather = data.main;
+    var feelsLike = weather.feels_like;
+    var humidity = weather.humidity;
+    var pressure = weather.pressure + " kilopascals";
+    var temp = weather.temp + "\u00B0F";
+    var hi = weather.temp_max + "\u00B0F";
+    var low = weather.temp_min + "\u00B0F";
     var sunrise = data.sys.sunrise;
     var sunset = data.sys.sunset;
     var type = data.weather[0].main;
@@ -175,17 +182,18 @@ function addWeather(cityName, data) {
     var icon = data.weather[0].icon;
     newIcon.src = "http://openweathermap.org/img/wn/" + icon + ".png";
     city.textContent = cityName;
-    currentHigh.textContent = "Today's high: " + hi
-    currentLow.textContent = "Today's low: " + low
-    currentAirPressure.textContent = "Pressure: " + pressure
-    currentHumidity.textContent = humidity + "% Humidity"
+    currentHigh.textContent = "Today's high: " + hi;
+    currentLow.textContent = "Today's low: " + low;
+    currentAirPressure.textContent = "Pressure: " + pressure;
+    currentHumidity.textContent = humidity + "% Humidity";
     if (windGust == undefined) {
         currentWind.textContent = "Wind: " + windSpeed + "MPH"
     } else {
         currentWind.textContent = "Wind: " + windSpeed + "MPH" + " with gusts up to " + windGust + "MPH"
     }
-    todayDate.textContent = today.format('ddd MMM DD, YYYY')
+    todayDate.textContent = today.format('ddd MMM DD, YYYY');
     console.log(type)
+    todayType.textContent = type;
 };
 
 // Grab the coordinates from the data attribute in a previous city and call the two forecasting functions

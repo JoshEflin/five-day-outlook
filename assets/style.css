@@ -132,8 +132,9 @@ header {
     outline-color: cornsilk;
 }
 .todays-weather {
-    /* list-style: none; */
+    list-style: none;
     text-align: center;
+    margin-right: 2.5rem;
 }
 .forecast{
     margin-top: 2rem;
