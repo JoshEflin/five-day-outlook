@@ -1,14 +1,3 @@
-// GIVEN a weather dashboard with form inputs
-// WHEN I search for a city
-// THEN I am presented with current and future conditions for that city and that city is added to the search history
-// WHEN I view current weather conditions for that city
-// THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the wind speed
-// WHEN I view future weather conditions for that city
-// THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-// WHEN I click on a city in the search history
-// THEN I am again presented with current and future conditions for that city
-
-// BUGS- form input does not allow for state code or country code
 
 var formInput = document.querySelector(".city-name")
 var searchHistory = document.querySelector(".search-history")
@@ -27,8 +16,8 @@ var todayDate = document.querySelector('.date');
 var fiveDayOutlook = document.querySelector('.forecast-card');
 var todayType = document.querySelector('.today-type');
 var weekCity = document.querySelector('.week');
-console.log(weekCity)
-var today = dayjs()
+var today = dayjs();
+var btn = document.querySelector('.btn');
 
 
 // var coordinates;
@@ -67,10 +56,10 @@ function newSearch(userCity) {
             return response.json();
         })
         .then(function (data) {
-            var latitude = data[0].lat;
-            var longitude = data[0].lon;
-            var coordinates = [latitude, longitude];
-            var geoData = {
+            let latitude = data[0].lat;
+            let longitude = data[0].lon;
+            let coordinates = [latitude, longitude];
+            let geoData = {
                 cityName: userCity,
                 coordinates: coordinates
             };
@@ -90,10 +79,10 @@ function currentWeather(cityName, coordinates) {
     var requestUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates[0] + "&lon=" + coordinates[1] + "&appid=" + apiKey + "&units=imperial";
     fetch(requestUrl)
         .then(function (response) {
-            return response.json();
+           return response.json(); 
         })
         .then(function (data) {
-            // console.log(data)
+            console.log(data)
             addWeather(cityName, data);
             resetCityHistory();
         })
@@ -128,7 +117,6 @@ function addCityHistory() {
         };
     } else if (cityObjArr.length >= 5) {
         for (i = cityObjArr.length - 1; i >= cityObjArr.length - 5; i--) {
-            console.log(cityObjArr[i]);
             let text = cityObjArr[i].cityName;
             let coordinates = cityObjArr[i].coordinates;
             let cityEl = document.createElement('li');
@@ -150,36 +138,49 @@ function resetFiveDay() {
 }
 // adds the 5 day outlook to the HTML
 function addForecast(cityName, data) {
-    weekCity.textContent = "Five day outlook for "+ cityName
+    weekCity.textContent = "Five day outlook for " + cityName
     resetFiveDay()
-    var fiveDay = data.list.filter(time => time.dt_txt.includes("12:00:00"))
+    let fiveDay = data.list.filter(time => time.dt_txt.includes("12:00:00"))
     for (i = 0; i < fiveDay.length; i++) {
         let day = fiveDay[i];
+        console.log(day)
         let tempMax = day.main.temp_max;
-        let tempMin = day.main.temp_min;
+        let icon = day.weather.icon
+        let humidity = day.main.humidity;
+        let windSpeed = day.wind.speed
+        let date = dayjs(day.dt_txt)
         let dayEl = document.createElement('div');
-        dayEl.className == 'day-card';
-        dayEl.textContent = "hi" + i;
+        dayEl.setAttribute('class', 'day-card');
+        dayEl.textContent = date.format('ddd MMM DD');
         fiveDayOutlook.appendChild(dayEl);
+        let dayTempMax = document.createElement('p')
+        let dayIcon = document.createElement('p')
+        let dayHumidity = document.createElement('p')
+        let dayWind = document.createElement('p')
+        dayTempMax.textContent = tempMax+ "\u00B0F";
+        dayHumidity.textContent = humidity + "% Humidity";
+        dayWind.textContent = windSpeed + "MPH winds";
+        dayEl.appendChild(dayTempMax)
+        dayEl.appendChild(dayHumidity)
+        dayEl.appendChild(dayWind);
+
+
     }
 
 };
 
 // adds todays weather to the HTML 
 function addWeather(cityName, data) {
-    var weather = data.main;
-    var feelsLike = weather.feels_like;
-    var humidity = weather.humidity;
-    var pressure = weather.pressure + " kilopascals";
-    var temp = weather.temp + "\u00B0F";
-    var hi = weather.temp_max + "\u00B0F";
-    var low = weather.temp_min + "\u00B0F";
-    var sunrise = data.sys.sunrise;
-    var sunset = data.sys.sunset;
-    var type = data.weather[0].main;
-    var windSpeed = data.wind.speed;
-    var windGust = data.wind.gust;
-    var icon = data.weather[0].icon;
+    let weather = data.main;
+    let humidity = weather.humidity;
+    let pressure = weather.pressure + " kilopascals";
+    let temp = weather.temp + "\u00B0F";
+    let hi = weather.temp_max + "\u00B0F";
+    let low = weather.temp_min + "\u00B0F";
+    let type = data.weather[0].main;
+    let windSpeed = data.wind.speed;
+    let windGust = data.wind.gust;
+    let icon = data.weather[0].icon;
     newIcon.src = "http://openweathermap.org/img/wn/" + icon + ".png";
     city.textContent = cityName;
     currentHigh.textContent = "Today's high: " + hi;
@@ -192,21 +193,21 @@ function addWeather(cityName, data) {
         currentWind.textContent = "Wind: " + windSpeed + "MPH" + " with gusts up to " + windGust + "MPH"
     }
     todayDate.textContent = today.format('ddd MMM DD, YYYY');
-    console.log(type)
     todayType.textContent = type;
 };
 
 // Grab the coordinates from the data attribute in a previous city and call the two forecasting functions
 function callPreviousCity(event) {
-    var clickedCity = event.target
-    var cityName = clickedCity.innerHTML
-    var latitude = clickedCity.getAttribute('data-latitude')
-    var longitude = clickedCity.getAttribute('data-longitude')
+    let clickedCity = event.target
+    let cityName = clickedCity.innerHTML
+    let latitude = clickedCity.getAttribute('data-latitude')
+    let longitude = clickedCity.getAttribute('data-longitude')
     forecast(cityName, [latitude, longitude])
     currentWeather(cityName, [latitude, longitude])
 }
 
 searchedCityList.addEventListener('click', callPreviousCity)
+btn.addEventListener('click',main)
 formInput.addEventListener('keydown', function (event) {
     if (event.key === "Enter") {
         main();

@@ -69,8 +69,11 @@ body {
 }
 
 /* make form elements easier to work with */
-input,
+input{
+    font: inherit;
+}
 button{
+    display:none;
     font: inherit;
 }
 
@@ -82,11 +85,6 @@ button{
 
 .flex {
     display: flex;
-    gap: var(--gap, 1rem);
-}
-
-.grid {
-    display: grid;
     gap: var(--gap, 1rem);
 }
 
@@ -146,7 +144,11 @@ header {
 .forecast-card{
     display: flex;
     justify-content: space-around;
-    
+}
+.day-card {
+    outline: auto;
+    outline-color: cornsilk;
+    margin-bottom: 2rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -164,5 +166,11 @@ header {
     }
     header {
         margin:1rem;
+    }
+    button {
+        display:inline;
+        border-radius:15px;
+        align-items: center;
+        background-color: azure;
     }
 }
