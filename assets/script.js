@@ -50,7 +50,7 @@ function checkForCoordinates(searchedCity) {
 };
 // newSearch gets geocoding Data from the API and puts it in local storage
 function newSearch(userCity) {
-    var geoRequestUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + userCity + "&limit=&appid=" + apiKey;
+    var geoRequestUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + userCity + "&limit=&appid=" + apiKey;
     fetch(geoRequestUrl)
         .then(function (response) {
             return response.json();
