@@ -144,6 +144,7 @@ header {
 .forecast-card{
     display: flex;
     justify-content: space-around;
+    margin:1rem;
 }
 .day-card {
     outline: auto;
