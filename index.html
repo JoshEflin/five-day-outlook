@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U=" crossorigin="anonymous"></script>
     <title>Weather-er</title>
 </head>
 
@@ -16,25 +18,33 @@
             <p class="prompt"> Enter a City's name below</p>
             <input class="city-name" type="text" placeholder="Search">
         </header>
-        <div class=" container flex">
-            <aside class=" search-history">
-                <h2 class="container-label">Previous Citys</h2>
-                <ul class="searched-cities"></ul>
+        <div class=" container">
+            <div class="flex">
+                <aside class=" search-history">
+                    <h2 class="container-label">Previous Citys</h2>
+                    <ul class="searched-cities"></ul>
 
 
-            </aside>
-            <main class="dashboard">
-                <h2 class="container-label">Today's Forecast</h2>
-                <p>Boston</p>
-                <ul class="todays-weather">
-                    <li>High</li>
-                    <li>Low</li>
-                    <li>Pressure</li>
-                    <li>Clouds</li>
-                    <li>air pollution</li>
-                </ul>
-            </main>
+                </aside>
+                <main class="dashboard">
+                    <h2 class="container-label date">Today's Forecast</h2>
+                    <h3 class="city-weather"></h3>
+                    <img class="icon"></img>
+                    <ul class="todays-weather">
+                        <li class='high'></li>
+                        <li class='low'></li>
+                        <li class='pressure'></li>
+                        <li class="humidity"></li>
+                        <li class="wind"></li>
+                    </ul>
+                </main>
+            </div>
+            <section class="forecast"> 
+                <h2 class = "container-label">5 Day Outlook here</h2>
+                <div class = "forecast-card"></div>
+            </section>
         </div>
+        
     </div>
     <script src="assets/script.js"></script>
 </body>

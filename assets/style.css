@@ -131,11 +131,22 @@ header {
     background-color: cornflowerblue;
     outline-color: cornsilk;
 }
-/* .todays-weather {
-    display:flex;
-    text-decoration: none;
-
-} */
+.todays-weather {
+    /* list-style: none; */
+    text-align: center;
+}
+.forecast{
+    margin-top: 2rem;
+    outline: auto;
+    background-color: cornflowerblue;
+    outline-color: cornsilk;
+    text-align: center;
+}
+.forecast-card{
+    display: flex;
+    justify-content: space-around;
+    
+}
 
 @media screen and (max-width: 767px) {
     .container{
@@ -146,7 +157,6 @@ header {
     }
     .search-history {
         margin: 1rem;
-
     }
     .dashboard {
         margin:1rem;
