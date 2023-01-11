@@ -193,7 +193,9 @@ header {
     header {
         margin: 1rem;
     }
-
+    .forecast{
+        margin:1rem;
+    }
     button {
         display: inline;
         border-radius: 15px;
