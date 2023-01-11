@@ -4,7 +4,7 @@
 :root {
     /* colors */
     --clr-light-blue: 198, 84%, 56%;
-    --clr-dark-blue : 228, 84%, 56%;
+    --clr-dark-blue: 228, 84%, 56%;
     --clr-dark-orange: 46, 100%, 50%;
 
     /* font stuff below */
@@ -16,7 +16,7 @@
     --fs-400: 1.125rem;
     --fs-300: 1rem;
     --fs-200: 0.875rem;
-    
+
     /* font-families */
     --ff-serif: "Bellefair", serif;
     --ff-sans-cond: "Barlow Condensed", sans-serif;
@@ -44,7 +44,7 @@ h3,
 h4,
 h5,
 p {
-    margin: 0; 
+    margin: 0;
 }
 
 h1,
@@ -62,24 +62,21 @@ body {
     font-family: var(--ff-sans-normal);
     font-size: var(--fs-400);
     color: whitesmoke;
-    background-image: linear-gradient( hsl( var(--clr-dark-blue)),hsl(var(--clr-light-blue)));
+    background-image: linear-gradient(hsl(var(--clr-dark-blue)), hsl(var(--clr-light-blue)));
     line-height: 1.5;
     min-height: 100vh;
-    
+
 }
 
 /* make form elements easier to work with */
-input{
-    font: inherit;
-}
-button{
-    display:none;
+input {
     font: inherit;
 }
 
-/* ------------------- */
-/* Utility classes     */
-/* ------------------- */
+button {
+    display: none;
+    font: inherit;
+}
 
 /* general */
 
@@ -94,6 +91,7 @@ button{
     margin-inline: auto;
     max-width: 80rem;
 }
+
 input {
     text-align: center;
 }
@@ -102,14 +100,16 @@ header {
     font-family: var(--ff-sans-cond);
     text-align: center;
     padding-bottom: 1rem;
-    outline:auto;
+    outline: auto;
 }
+
 .container-label {
     font-size: var(--fs-500);
     font-family: var(--ff-serif);
     text-align: center;
-    color: hsl(var(--clr-dark-orange) );
+    color: hsl(var(--clr-dark-orange));
 }
+
 .search-history {
     border-radius: 5px;
     margin-right: 2rem;
@@ -118,9 +118,23 @@ header {
     background-color: cornflowerblue;
     outline-color: cornsilk;
 }
+
+.searched-cities {
+    font-size: var(--fs-400);
+    font-family: var(--ff-sans-cond);
+    text-align: center;
+}
+
+.previous-search:hover {
+    cursor: grab;
+    background-color: rgb(42, 108, 230);
+    border-radius: 10px;
+}
+
 .city-name {
     border-radius: 15px;
 }
+
 .dashboard {
     border-radius: 5px;
     text-align: center;
@@ -129,48 +143,60 @@ header {
     background-color: cornflowerblue;
     outline-color: cornsilk;
 }
+
 .todays-weather {
-    list-style: none;
     text-align: center;
-    margin-right: 2.5rem;
 }
-.forecast{
+
+.forecast {
     margin-top: 2rem;
     outline: auto;
     background-color: cornflowerblue;
     outline-color: cornsilk;
     text-align: center;
 }
-.forecast-card{
+
+.forecast-card {
     display: flex;
     justify-content: space-around;
-    margin:1rem;
+    margin: 1rem;
 }
+
 .day-card {
     outline: auto;
     outline-color: cornsilk;
     margin-bottom: 2rem;
 }
 
+.day-card img {
+    display: block;
+    margin: auto;
+}
+
 @media screen and (max-width: 767px) {
-    .container{
+    .container {
         padding: 0px
     }
-    .flex{
-    flex-direction: column;
+
+    .flex {
+        flex-direction: column;
     }
+
     .search-history {
         margin: 1rem;
     }
+
     .dashboard {
-        margin:1rem;
+        margin: 1rem;
     }
+
     header {
-        margin:1rem;
+        margin: 1rem;
     }
+
     button {
-        display:inline;
-        border-radius:15px;
+        display: inline;
+        border-radius: 15px;
         align-items: center;
         background-color: azure;
     }

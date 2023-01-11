@@ -34,7 +34,7 @@ function checkForCoordinates(searchedCity) {
     cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
     if (cityObjArr !== null) {
         for (i = 0; i < cityObjArr.length; i++) {
-            if (cityObjArr[i].cityName == searchedCity) {
+            if (cityObjArr[i].cityName.toLowerCase() == searchedCity) {
                 cityObjArr.push(cityObjArr[i]);
                 cityObjArr.splice(i, 1,);
                 localStorage.clear();
@@ -56,11 +56,12 @@ function newSearch(userCity) {
             return response.json();
         })
         .then(function (data) {
+            console.log(data)
             let latitude = data[0].lat;
             let longitude = data[0].lon;
             let coordinates = [latitude, longitude];
             let geoData = {
-                cityName: userCity,
+                cityName: data[0].name,// I use data[0].name instead of userCity here because  if you pass a number to the geocode api it returns a city and coordinates(crazy i know)
                 coordinates: coordinates
             };
             cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
@@ -70,8 +71,8 @@ function newSearch(userCity) {
             };
             cityObjArr.push(geoData);
             localStorage.setItem("cityObjArr", JSON.stringify(cityObjArr));
-            currentWeather(userCity, coordinates);
-            forecast(userCity, coordinates);
+            currentWeather(data[0].name, coordinates);
+            forecast(data[0].name, coordinates);
         });
 };
 // fetches todays forcast from the selected city and sends it to add weather. Then calls reset city history.
@@ -82,7 +83,6 @@ function currentWeather(cityName, coordinates) {
            return response.json(); 
         })
         .then(function (data) {
-            console.log(data)
             addWeather(cityName, data);
             resetCityHistory();
         })
@@ -108,7 +108,7 @@ function addCityHistory() {
         for (i = cityObjArr.length - 1; i >= 0; i--) {
             let text = cityObjArr[i].cityName;
             let coordinates = cityObjArr[i].coordinates;
-            let cityEl = document.createElement('li');
+            let cityEl = document.createElement('p');
             cityEl.setAttribute("class", "previous-search");
             cityEl.textContent = text;
             cityEl.setAttribute('data-latitude', coordinates[0]);
@@ -119,7 +119,7 @@ function addCityHistory() {
         for (i = cityObjArr.length - 1; i >= cityObjArr.length - 5; i--) {
             let text = cityObjArr[i].cityName;
             let coordinates = cityObjArr[i].coordinates;
-            let cityEl = document.createElement('li');
+            let cityEl = document.createElement('p');
             cityEl.setAttribute("class", "previous-search");
             cityEl.textContent = text;
             cityEl.setAttribute('data-latitude', coordinates[0]);
@@ -145,7 +145,8 @@ function addForecast(cityName, data) {
         let day = fiveDay[i];
         console.log(day)
         let tempMax = day.main.temp_max;
-        let icon = day.weather.icon
+        let icon = day.weather[0].icon
+        console.log(icon)
         let humidity = day.main.humidity;
         let windSpeed = day.wind.speed
         let date = dayjs(day.dt_txt)
@@ -153,13 +154,15 @@ function addForecast(cityName, data) {
         dayEl.setAttribute('class', 'day-card');
         dayEl.textContent = date.format('ddd MMM DD');
         fiveDayOutlook.appendChild(dayEl);
-        let dayTempMax = document.createElement('p')
-        let dayIcon = document.createElement('p')
-        let dayHumidity = document.createElement('p')
-        let dayWind = document.createElement('p')
+        let dayTempMax = document.createElement('p');
+        let dayIcon = document.createElement('img');
+        let dayHumidity = document.createElement('p');
+        let dayWind = document.createElement('p');
+        dayIcon.src = "http://openweathermap.org/img/wn/" + icon + ".png";
         dayTempMax.textContent = tempMax+ "\u00B0F";
         dayHumidity.textContent = humidity + "% Humidity";
         dayWind.textContent = windSpeed + "MPH winds";
+        dayEl.appendChild(dayIcon)
         dayEl.appendChild(dayTempMax)
         dayEl.appendChild(dayHumidity)
         dayEl.appendChild(dayWind);
